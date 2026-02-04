@@ -1,9 +1,7 @@
 print("Starting AI Piracy Guard...")
-print("Loading modules...")
+print("Loading dashboard and logger...")
 
-print("-> Video Extractor loaded")
-print("-> Piracy Detector loaded")
-print("-> Deepfake Checker loaded")
-print("-> Watermark Analyzer loaded")
+print("Dashboard ready")
+print("Logger active")
 
-print("\nSystem is ready.")
+print("\nSystem fully operational.")
