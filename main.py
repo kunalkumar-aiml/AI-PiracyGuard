@@ -1,7 +1,9 @@
 print("Starting AI Piracy Guard...")
-print("Loading dashboard and logger...")
 
-print("Dashboard ready")
-print("Logger active")
+print("Loading modules:")
+print("- Scanner loaded")
+print("- Dashboard loaded")
+print("- Logger loaded")
+print("- Report generator ready")
 
-print("\nSystem fully operational.")
+print("\nSystem is fully operational.")
