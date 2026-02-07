@@ -1,18 +1,14 @@
 import time
+import metrics
+import utils
 
 def show_dashboard():
-    print("\n================ AI PIRACY GUARD DASHBOARD ================\n")
+    utils.print_header("AI PIRACY GUARD DASHBOARD")
 
     print("System Status       : ACTIVE")
-    print("Videos Scanned      : 12")
-    print("Possible Leaks      : 2")
-    print("Deepfake Alerts     : 1")
-    print("Watermark Traced    : 1")
+    print("Monitoring Mode     : Continuous\n")
 
-    print("\nRecent Activity:")
-    print("- Scanned new upload: movie_clip_01.mp4")
-    print("- Flagged suspicious video")
-    print("- Watermark match found")
+    metrics.show_metrics()
 
     print("\nRefreshing dashboard in 5 seconds...")
     time.sleep(5)
