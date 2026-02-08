@@ -5,5 +5,6 @@ print("- Scanner loaded")
 print("- Dashboard loaded")
 print("- Logger loaded")
 print("- Report generator ready")
+print("- Pipeline ready")
 
-print("\nSystem is fully operational.")
+print("\nRun pipeline.py to execute full workflow.")
