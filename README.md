@@ -29,6 +29,19 @@ Future Plans
 	•	Improve accuracy of video matching
 	•	Add automatic alert system for pirated uploads
 	•	Integrate cloud-based storage for large videos
+	## How to run the project
+
+1. Run main.py to start the system
+2. Run pipeline.py for full workflow:
+   - scans videos
+   - updates dashboard
+   - generates report
+   - logs all activity
+
+Files you can try:
+- scanner.py
+- dashboard.py
+- pipeline.py
 
 Author: Kunal Kumar
 Branch: CSE (AI & ML)
