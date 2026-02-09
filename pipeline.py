@@ -2,6 +2,7 @@ import scanner
 import dashboard
 import report_generator
 import logger
+import alerts_v2
 
 def run_pipeline():
     print("\n===== AI PIRACY GUARD PIPELINE START =====\n")
@@ -12,11 +13,15 @@ def run_pipeline():
     scanner.scan_new_uploads()
     logger.log_activity("Scanning completed")
 
-    print("\nStep 2: Updating dashboard...")
+    print("\nStep 2: Running risk analysis...")
+    alerts_v2.smart_alert("clip_02.mp4")
+    logger.log_activity("Risk analysis completed")
+
+    print("\nStep 3: Updating dashboard...")
     dashboard.show_dashboard()
     logger.log_activity("Dashboard updated")
 
-    print("\nStep 3: Generating report...")
+    print("\nStep 4: Generating report...")
     report_generator.generate_report()
     logger.log_activity("Report generated")
 
