@@ -1,47 +1,29 @@
-AI-PiracyGuard is a project aimed at reducing movie and video piracy on online platforms. Many times, newly released movies get leaked within hours, and creators lose revenue. This project tries to tackle that problem using Artificial Intelligence.
+# AI-PiracyGuard  
 
-The idea behind this project is to automatically detect pirated video clips, identify deepfake modifications, and analyze hidden watermarks inside original content. Instead of manually searching for leaks, this system helps automate the detection process.
+AI-PiracyGuard is a modular Python-based prototype system designed to detect and analyze pirated and manipulated video content. The project demonstrates how different software components can work together in an AI-based monitoring pipeline.
 
-What this project does
-	•	Extracts key frames from videos
-	•	Creates a unique digital fingerprint for each video
-	•	Compares uploaded clips with original content
-	•	Detects deepfake or manipulated videos
-	•	Helps trace the possible source of leaks using watermark analysis
+## What the system does
+- Automatically scans uploaded videos  
+- Estimates risk using a simple model  
+- Flags suspicious content with alerts  
+- Maintains activity logs  
+- Generates text reports  
+- Displays a visual summary of results  
 
-Technology Used
-	•	Python
-	•	OpenCV
-	•	Machine Learning
-	•	TensorFlow
-	•	NumPy and Pandas
+## Project Structure
+- scanner.py – finds new video uploads  
+- risk_model.py – calculates basic risk score  
+- alerts_v2.py – generates smart alerts  
+- dashboard.py – shows live status  
+- logger.py – records system activity  
+- report_generator.py – creates reports  
+- visualizer.py – displays summary results  
+- pipeline.py – runs everything end-to-end  
 
-Why I built this
+## How to run
+1. Run `main.py` to initialize the system  
+2. Run `pipeline.py` to execute the full workflow  
 
-I chose this project because piracy is a real-world issue faced by OTT platforms like Netflix and Amazon Prime. I wanted to work on something practical that connects AI with an industry-level problem rather than just a simple college assignment.
+This is a learning project aimed at understanding how AI, automation, and software modules can be integrated into a single working system.
 
-Current Status
-
-This project is in the development phase. I am continuously improving different modules like video extraction, similarity detection, and deepfake analysis.
-
-Future Plans
-	•	Build a simple dashboard to visualize results
-	•	Improve accuracy of video matching
-	•	Add automatic alert system for pirated uploads
-	•	Integrate cloud-based storage for large videos
-	## How to run the project
-
-1. Run main.py to start the system
-2. Run pipeline.py for full workflow:
-   - scans videos
-   - updates dashboard
-   - generates report
-   - logs all activity
-
-Files you can try:
-- scanner.py
-- dashboard.py
-- pipeline.py
-
-Author: Kunal Kumar
-Branch: CSE (AI & ML)
+Author: Kunal Kumar  
