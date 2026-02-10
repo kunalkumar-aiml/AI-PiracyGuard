@@ -3,6 +3,7 @@ import dashboard
 import report_generator
 import logger
 import alerts_v2
+import visualizer
 
 def run_pipeline():
     print("\n===== AI PIRACY GUARD PIPELINE START =====\n")
@@ -24,6 +25,10 @@ def run_pipeline():
     print("\nStep 4: Generating report...")
     report_generator.generate_report()
     logger.log_activity("Report generated")
+
+    print("\nStep 5: Showing visual summary...")
+    visualizer.show_visual_summary()
+    logger.log_activity("Visualization displayed")
 
     print("\n===== PIPELINE FINISHED =====")
     logger.log_activity("Pipeline finished")
