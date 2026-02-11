@@ -7,4 +7,4 @@ print("- Logger loaded")
 print("- Report generator ready")
 print("- Pipeline ready")
 
-print("\nRun pipeline.py to execute full workflow.")
+print("\nRun src/pipeline.py to execute full workflow.")
