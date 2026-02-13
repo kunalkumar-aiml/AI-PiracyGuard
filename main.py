@@ -1,10 +1,8 @@
-print("Starting AI Piracy Guard...")
+from src.pipeline import run_pipeline
 
-print("Loading modules:")
-print("- Scanner loaded")
-print("- Dashboard loaded")
-print("- Logger loaded")
-print("- Report generator ready")
-print("- Pipeline ready")
+def main():
+    print("Starting AI Piracy Guard...\n")
+    run_pipeline()
 
-print("\nRun src/pipeline.py to execute full workflow.")
+if __name__ == "__main__":
+    main()
