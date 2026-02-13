@@ -1,4 +1,4 @@
-import scanner
+from core import scanner
 import dashboard
 import report_generator
 import logger
