@@ -1,18 +1,28 @@
+import os
 import time
 import config
 
 def scan_new_uploads():
-    print(f"Scanning folder: {config.SCAN_FOLDER}")
-    print("Looking for new videos...")
+    folder = config.SCAN_FOLDER
 
-    # Prototype behavior (future me automation add karenge)
-    sample_files = ["clip_01.mp4", "clip_02.mp4"]
+    print("Scanning folder:", folder)
 
-    for file in sample_files:
-        print(f"Checking: {file}")
-        time.sleep(1)
+    if not os.path.exists(folder):
+        print("Folder does not exist.")
+        return
 
-    print("Scan completed.")
+    files = os.listdir(folder)
+
+    if not files:
+        print("No files found.")
+        return
+
+    for file in files:
+        if file.endswith(".mp4"):
+            print("Checking file:", file)
+            time.sleep(1)
+
+    print("Scanning finished.")
 
 if __name__ == "__main__":
     scan_new_uploads()
