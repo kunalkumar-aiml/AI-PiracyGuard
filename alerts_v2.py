@@ -1,16 +1,15 @@
-import risk_model
+from models import risk_model
+import config
 
 def smart_alert(video_name):
-    print(f"\nRunning smart alert for: {video_name}")
+    print("Running alert for:", video_name)
 
     risk = risk_model.calculate_risk(video_name)
 
-    if risk > 0.7:
-        print("🚨 HIGH RISK — Immediate action required!")
-    elif risk > 0.4:
-        print("⚠️ Medium risk — monitor closely.")
+    if risk >= config.PIRACY_THRESHOLD:
+        print("Alert: Possible pirated content detected")
     else:
-        print("✅ Low risk — safe for now.")
+        print("No serious issue detected")
 
 if __name__ == "__main__":
-    smart_alert("clip_02.mp4")
+    smart_alert("movie_cam_hd.mp4")
