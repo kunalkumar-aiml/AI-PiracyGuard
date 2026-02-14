@@ -1,20 +1,39 @@
-import random
+import config
 
 def calculate_risk(video_name):
-    print(f"Analyzing risk for: {video_name}")
+    score = 0
 
-    # Prototype risk score (future me real ML model aayega)
-    risk = round(random.uniform(0, 1), 2)
+    name = video_name.lower()
 
-    if risk > 0.7:
-        level = "HIGH"
-    elif risk > 0.4:
-        level = "MEDIUM"
+    # Simple rule based scoring
+    if "cam" in name:
+        score += 0.4
+
+    if "hd" in name:
+        score += 0.2
+
+    if "official" in name:
+        score -= 0.3
+
+    if name.endswith(".mp4"):
+        score += 0.2
+
+    # Make sure score stays between 0 and 1
+    if score < 0:
+        score = 0
+
+    if score > 1:
+        score = 1
+
+    print("Risk score:", score)
+
+    if score >= config.PIRACY_THRESHOLD:
+        print("High piracy risk")
     else:
-        level = "LOW"
+        print("Low or medium risk")
 
-    print(f"Risk score: {risk} | Level: {level}")
-    return risk
+    return score
+
 
 if __name__ == "__main__":
-    calculate_risk("clip_02.mp4")
+    calculate_risk("movie_cam_hd.mp4")
