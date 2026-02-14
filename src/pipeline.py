@@ -1,37 +1,39 @@
 from core import scanner
-import dashboard
-import report_generator
-import logger
-import alerts_v2
-import visualizer
+from core import alerts_v2
+from report_generator import generate_report
+from logger import log_activity
+from visualizer import show_visual_summary
+import os
+import config
 
 def run_pipeline():
     print("\n===== AI PIRACY GUARD PIPELINE START =====\n")
 
-    logger.log_activity("Pipeline started")
+    log_activity("Pipeline started")
 
-    print("Step 1: Scanning uploads...")
-    scanner.scan_new_uploads()
-    logger.log_activity("Scanning completed")
+    folder = config.SCAN_FOLDER
 
-    print("\nStep 2: Running risk analysis...")
-    alerts_v2.smart_alert("clip_02.mp4")
-    logger.log_activity("Risk analysis completed")
+    if not os.path.exists(folder):
+        print("Upload folder not found.")
+        return
 
-    print("\nStep 3: Updating dashboard...")
-    dashboard.show_dashboard()
-    logger.log_activity("Dashboard updated")
+    files = os.listdir(folder)
 
-    print("\nStep 4: Generating report...")
-    report_generator.generate_report()
-    logger.log_activity("Report generated")
+    if not files:
+        print("No files to process.")
+        return
 
-    print("\nStep 5: Showing visual summary...")
-    visualizer.show_visual_summary()
-    logger.log_activity("Visualization displayed")
+    for file in files:
+        if file.endswith(".mp4"):
+            print("\nProcessing:", file)
+            alerts_v2.smart_alert(file)
 
-    print("\n===== PIPELINE FINISHED =====")
-    logger.log_activity("Pipeline finished")
+    generate_report()
+    show_visual_summary()
+
+    log_activity("Pipeline finished")
+    print("\n===== PIPELINE FINISHED =====\n")
+
 
 if __name__ == "__main__":
     run_pipeline()
