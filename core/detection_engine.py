@@ -1,3 +1,4 @@
+DETECTION_RESULTS = []
 from core.fingerprint import generate_video_fingerprint, compare_fingerprints
 
 # Simulated known pirated fingerprint storage
