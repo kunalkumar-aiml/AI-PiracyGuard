@@ -1,12 +1,17 @@
-DETECTION_RESULTS = []
 from core.fingerprint import generate_video_fingerprint, compare_fingerprints
 
-# Simulated known pirated fingerprint storage
+# store known reference fingerprints
 KNOWN_FINGERPRINTS = {}
+
+# store scan results
+DETECTION_RESULTS = []
+
 
 def register_known_video(video_path):
     print("Registering known video:", video_path)
+
     fingerprint = generate_video_fingerprint(video_path)
+
     if fingerprint:
         KNOWN_FINGERPRINTS[video_path] = fingerprint
         print("Video registered.\n")
@@ -21,19 +26,35 @@ def check_video(video_path, threshold=75):
         print("Fingerprint generation failed.")
         return
 
+    best_similarity = 0
+
     for known_video, known_fp in KNOWN_FINGERPRINTS.items():
         similarity = compare_fingerprints(new_fp, known_fp)
+
         print("Compared with:", known_video)
         print("Similarity:", similarity, "%")
 
-        if similarity >= threshold:
-            print("⚠ High similarity detected. Possible piracy.\n")
-            return
+        if similarity > best_similarity:
+            best_similarity = similarity
 
-    print("No strong match found.\n")
+    # decide status
+    if best_similarity >= threshold:
+        status = "Pirated"
+    else:
+        status = "Safe"
+
+    # store result
+    result = {
+        "video": video_path,
+        "similarity": best_similarity,
+        "status": status
+    }
+
+    DETECTION_RESULTS.append(result)
+
+    print("Final decision:", status, "\n")
 
 
 if __name__ == "__main__":
-    # Example usage
     register_known_video("known_video.mp4")
     check_video("test_video.mp4")
