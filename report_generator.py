@@ -1,25 +1,42 @@
-import datetime
+import os
+import config
+from core.detection_engine import DETECTION_RESULTS
+
 
 def generate_report():
-    now = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    print("\n===== SCAN REPORT =====\n")
 
-    report = f"""
-    AI Piracy Guard Report
-    -----------------------
-    Generated on: {now}
+    if not DETECTION_RESULTS:
+        print("No results available.")
+        return
 
-    Videos scanned   : 12
-    Suspicious clips : 2
-    Deepfake alerts  : 1
-    Watermark traced : 1
+    report_lines = []
+    report_lines.append("AI Piracy Guard Report\n")
+    report_lines.append("----------------------------\n")
 
-    Status: Monitoring active
-    """
+    for result in DETECTION_RESULTS:
+        line1 = f"Video: {result['video']}\n"
+        line2 = f"Similarity: {result['similarity']}%\n"
+        line3 = f"Status: {result['status']}\n"
+        line4 = "----------------------------\n"
 
-    with open("scan_report.txt", "w") as file:
-        file.write(report)
+        print(line1.strip())
+        print(line2.strip())
+        print(line3.strip())
+        print("----------------------------")
 
-    print("Report generated: scan_report.txt")
+        report_lines.extend([line1, line2, line3, line4])
 
-if __name__ == "__main__":
-    generate_report()
+    # Save to file
+    report_path = config.REPORT_FILE
+
+    # make sure folder exists
+    folder = os.path.dirname(report_path)
+    if folder and not os.path.exists(folder):
+        os.makedirs(folder)
+
+    with open(report_path, "w") as f:
+        f.writelines(report_lines)
+
+    print("\nReport saved to:", report_path)
+    print("\nReport generation completed.\n")
