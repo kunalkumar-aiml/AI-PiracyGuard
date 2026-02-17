@@ -1,15 +1,19 @@
+import os
 import datetime
+import config
+
 
 def log_activity(message):
-    now = datetime.datetime.now()
-    timestamp = now.strftime("%Y-%m-%d %H:%M:%S")
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_line = f"[{timestamp}] {message}\n"
 
-    with open("activity_log.txt", "a") as file:
-        file.write(f"[{timestamp}] {message}\n")
+    log_path = config.LOG_FILE
 
-    print(f"Logged: {message}")
+    folder = os.path.dirname(log_path)
+    if folder and not os.path.exists(folder):
+        os.makedirs(folder)
 
-if __name__ == "__main__":
-    log_activity("System started")
-    log_activity("Dashboard viewed")
-    log_activity("Video scan initiated")
+    with open(log_path, "a") as f:
+        f.write(log_line)
+
+    print("Log:", message)
