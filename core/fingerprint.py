@@ -27,8 +27,11 @@ def generate_video_fingerprint(video_path):
     hashes = []
 
     for frame in frames:
-        frame_hash = compute_frame_hash(frame)
-        hashes.append(frame_hash)
+        try:
+            frame_hash = compute_frame_hash(frame)
+            hashes.append(frame_hash)
+        except Exception as e:
+            print("Error hashing frame:", str(e))
 
     print("Generated fingerprint for video.")
     return hashes
@@ -39,7 +42,6 @@ def hamming_distance(hash1, hash2):
         return None
 
     distance = 0
-
     for i in range(len(hash1)):
         if hash1[i] != hash2[i]:
             distance += 1
@@ -51,18 +53,29 @@ def compare_fingerprints(fp1, fp2):
     if not fp1 or not fp2:
         return 0
 
-    total_distance = 0
-    comparisons = min(len(fp1), len(fp2))
+    total_similarity = 0
+    comparisons = 0
 
-    for i in range(comparisons):
-        dist = hamming_distance(fp1[i], fp2[i])
-        total_distance += dist
+    for hash1 in fp1:
+        best_distance = None
 
-    max_bits = comparisons * len(fp1[0])
-    similarity = 1 - (total_distance / max_bits)
+        for hash2 in fp2:
+            dist = hamming_distance(hash1, hash2)
 
-    return round(similarity * 100, 2)
+            if dist is None:
+                continue
 
+            if best_distance is None or dist < best_distance:
+                best_distance = dist
 
-if __name__ == "__main__":
-    generate_video_fingerprint("sample.mp4")
+        if best_distance is not None:
+            max_bits = len(hash1)
+            similarity = 1 - (best_distance / max_bits)
+            total_similarity += similarity
+            comparisons += 1
+
+    if comparisons == 0:
+        return 0
+
+    final_score = (total_similarity / comparisons) * 100
+    return round(final_score, 2)
