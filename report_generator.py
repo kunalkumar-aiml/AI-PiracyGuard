@@ -1,4 +1,5 @@
 import os
+import json
 import config
 from core.detection_engine import DETECTION_RESULTS
 
@@ -27,16 +28,23 @@ def generate_report():
 
         report_lines.extend([line1, line2, line3, line4])
 
-    # Save to file
-    report_path = config.REPORT_FILE
+    # Save TXT report
+    txt_path = config.REPORT_FILE
 
-    # make sure folder exists
-    folder = os.path.dirname(report_path)
+    folder = os.path.dirname(txt_path)
     if folder and not os.path.exists(folder):
         os.makedirs(folder)
 
-    with open(report_path, "w") as f:
+    with open(txt_path, "w") as f:
         f.writelines(report_lines)
 
-    print("\nReport saved to:", report_path)
+    # Save JSON report
+    json_path = txt_path.replace(".txt", ".json")
+
+    with open(json_path, "w") as jf:
+        json.dump(DETECTION_RESULTS, jf, indent=4)
+
+    print("\nReport saved to:")
+    print(txt_path)
+    print(json_path)
     print("\nReport generation completed.\n")
