@@ -1,6 +1,5 @@
 import os
 import config
-from core import scanner
 from core import detection_engine
 from logger import log_activity
 from report_generator import generate_report
@@ -16,15 +15,17 @@ def run_pipeline():
 
     if not os.path.exists(folder):
         print("Upload folder not found.")
+        log_activity("Upload folder not found")
         return
 
     files = os.listdir(folder)
 
     if not files:
         print("No files to process.")
+        log_activity("No files found in upload folder")
         return
 
-    # Register first file as known reference (demo purpose)
+    # Register first video as reference (demo purpose)
     first_video = None
 
     for file in files:
@@ -34,10 +35,14 @@ def run_pipeline():
 
     if first_video:
         detection_engine.register_known_video(first_video)
+        log_activity(f"Registered reference video: {first_video}")
 
     for file in files:
         if file.endswith(".mp4"):
             full_path = os.path.join(folder, file)
+
+            log_activity(f"Processing file: {file}")
+
             detection_engine.check_video(full_path)
 
     generate_report()
