@@ -1,5 +1,6 @@
 import config
 from core.fingerprint import generate_video_fingerprint, compare_fingerprints
+from logger import log_activity
 
 # store known reference fingerprints
 KNOWN_FINGERPRINTS = {}
@@ -51,6 +52,7 @@ def check_video(video_path):
     }
 
     DETECTION_RESULTS.append(result)
+    log_activity(f"{video_path} - {status} ({best_similarity}%)")
 
     print("Final decision:", status, "\n")
 
