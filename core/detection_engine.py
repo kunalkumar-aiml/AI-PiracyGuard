@@ -1,3 +1,4 @@
+import config
 from core.fingerprint import generate_video_fingerprint, compare_fingerprints
 
 # store known reference fingerprints
@@ -17,7 +18,7 @@ def register_known_video(video_path):
         print("Video registered.\n")
 
 
-def check_video(video_path, threshold=75):
+def check_video(video_path):
     print("Checking video:", video_path)
 
     new_fp = generate_video_fingerprint(video_path)
@@ -37,13 +38,12 @@ def check_video(video_path, threshold=75):
         if similarity > best_similarity:
             best_similarity = similarity
 
-    # decide status
-    if best_similarity >= threshold:
+    # use threshold from config
+    if best_similarity >= config.PIRACY_THRESHOLD:
         status = "Pirated"
     else:
         status = "Safe"
 
-    # store result
     result = {
         "video": video_path,
         "similarity": best_similarity,
