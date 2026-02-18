@@ -1,9 +1,11 @@
 import config
 from core.fingerprint import generate_video_fingerprint, compare_fingerprints
 from logger import log_activity
+from database.db_manager import init_db, save_fingerprint, get_all_fingerprints
 
-# store known reference fingerprints
-KNOWN_FINGERPRINTS = {}
+
+# initialize database on import
+init_db()
 
 # store scan results
 DETECTION_RESULTS = []
@@ -15,8 +17,9 @@ def register_known_video(video_path):
     fingerprint = generate_video_fingerprint(video_path)
 
     if fingerprint:
-        KNOWN_FINGERPRINTS[video_path] = fingerprint
-        print("Video registered.\n")
+        save_fingerprint(video_path, fingerprint)
+        print("Video saved to database.\n")
+        log_activity(f"Saved fingerprint for {video_path}")
 
 
 def check_video(video_path):
@@ -30,7 +33,9 @@ def check_video(video_path):
 
     best_similarity = 0
 
-    for known_video, known_fp in KNOWN_FINGERPRINTS.items():
+    known_data = get_all_fingerprints()
+
+    for known_video, known_fp in known_data.items():
         similarity = compare_fingerprints(new_fp, known_fp)
 
         print("Compared with:", known_video)
@@ -39,7 +44,6 @@ def check_video(video_path):
         if similarity > best_similarity:
             best_similarity = similarity
 
-    # use threshold from config
     if best_similarity >= config.PIRACY_THRESHOLD:
         status = "Pirated"
     else:
@@ -52,6 +56,7 @@ def check_video(video_path):
     }
 
     DETECTION_RESULTS.append(result)
+
     log_activity(f"{video_path} - {status} ({best_similarity}%)")
 
     print("Final decision:", status, "\n")
