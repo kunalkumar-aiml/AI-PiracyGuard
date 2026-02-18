@@ -15,7 +15,7 @@ def init_db():
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS fingerprints (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            video_path TEXT,
+            video_path TEXT UNIQUE,
             fingerprint TEXT
         )
     """)
@@ -30,12 +30,17 @@ def save_fingerprint(video_path, fingerprint_list):
 
     fingerprint_str = "|".join(fingerprint_list)
 
-    cursor.execute(
-        "INSERT INTO fingerprints (video_path, fingerprint) VALUES (?, ?)",
-        (video_path, fingerprint_str)
-    )
+    try:
+        cursor.execute(
+            "INSERT INTO fingerprints (video_path, fingerprint) VALUES (?, ?)",
+            (video_path, fingerprint_str)
+        )
+        conn.commit()
+        print("Fingerprint saved.")
 
-    conn.commit()
+    except sqlite3.IntegrityError:
+        print("Fingerprint already exists for this video.")
+
     conn.close()
 
 
