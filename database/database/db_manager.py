@@ -60,6 +60,7 @@ def get_all_fingerprints():
     conn.close()
 
     result = {}
+
     for video_path, fingerprint_str in rows:
         result[video_path] = fingerprint_str.split("|")
 
