@@ -1,12 +1,13 @@
 from core.detection_engine import DETECTION_RESULTS
 
 
-def show_visual_summary():
-    print("\n========== AI PIRACY GUARD SUMMARY ==========\n")
-
+def generate_summary():
     if not DETECTION_RESULTS:
-        print("No scan data available.\n")
-        return
+        return {
+            "total_videos": 0,
+            "piracy_matches": 0,
+            "safe_videos": 0
+        }
 
     total = len(DETECTION_RESULTS)
     piracy_count = 0
@@ -18,9 +19,8 @@ def show_visual_summary():
         else:
             safe_count += 1
 
-    print(f"Total Videos Scanned : {total}")
-    print(f"Piracy Matches       : {piracy_count}")
-    print(f"Safe Videos          : {safe_count}")
-
-    print("\nSystem Status: ACTIVE AND MONITORING")
-    print("============================================\n")
+    return {
+        "total_videos": total,
+        "piracy_matches": piracy_count,
+        "safe_videos": safe_count
+    }
