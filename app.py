@@ -9,13 +9,14 @@ from core.detection_engine import register_known_video
 from database.db_manager import (
     get_db_stats,
     save_scan_history,
-    get_scan_history
+    get_scan_history,
+    get_trend_data
 )
 from visualizer import generate_summary
 
 app = Flask(__name__)
 
-SECRET_KEY = os.environ.get("SECRET_KEY", "supersecret")
+SECRET_KEY = os.environ.get("SECRET_KEY", "supersecretkey")
 
 
 def token_required(f):
@@ -29,7 +30,7 @@ def token_required(f):
         try:
             jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
         except:
-            return jsonify({"error": "Invalid token"}), 401
+            return jsonify({"error": "Invalid or expired token"}), 401
 
         return f(*args, **kwargs)
 
@@ -40,7 +41,10 @@ def token_required(f):
 def login():
     data = request.get_json()
 
-    if not data or data.get("username") != "admin" or data.get("password") != "admin":
+    if not data:
+        return jsonify({"error": "Missing credentials"}), 400
+
+    if data.get("username") != "admin" or data.get("password") != "admin":
         return jsonify({"error": "Invalid credentials"}), 401
 
     token = jwt.encode(
@@ -57,7 +61,10 @@ def login():
 
 @app.route("/")
 def home():
-    return jsonify({"service": "AI Piracy Guard", "status": "API Running"})
+    return jsonify({
+        "service": "AI Piracy Guard",
+        "status": "API Running"
+    })
 
 
 @app.route("/run", methods=["POST"])
@@ -72,7 +79,10 @@ def run_scan():
         summary["safe_videos"]
     )
 
-    return jsonify({"status": "Scan completed", "summary": summary})
+    return jsonify({
+        "status": "Scan completed",
+        "summary": summary
+    })
 
 
 @app.route("/register", methods=["POST"])
@@ -84,7 +94,10 @@ def register():
         return jsonify({"error": "video_path required"}), 400
 
     register_known_video(data["video_path"])
-    return jsonify({"status": "Video registered"})
+
+    return jsonify({
+        "status": "Video registered"
+    })
 
 
 @app.route("/stats", methods=["GET"])
@@ -102,7 +115,17 @@ def db_info():
 @app.route("/history", methods=["GET"])
 @token_required
 def history():
-    return jsonify({"scan_history": get_scan_history()})
+    return jsonify({
+        "scan_history": get_scan_history()
+    })
+
+
+@app.route("/analytics/trend", methods=["GET"])
+@token_required
+def analytics_trend():
+    return jsonify({
+        "trend": get_trend_data()
+    })
 
 
 if __name__ == "__main__":
