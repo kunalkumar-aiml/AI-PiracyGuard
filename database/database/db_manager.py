@@ -60,3 +60,15 @@ def get_all_fingerprints():
         result[video_path] = fingerprint_list
 
     return result
+    def get_db_stats():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT COUNT(*) FROM fingerprints")
+    count = cursor.fetchone()[0]
+
+    conn.close()
+
+    return {
+        "total_registered_videos": count
+    }
