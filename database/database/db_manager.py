@@ -11,7 +11,6 @@ def init_db():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
-    # Fingerprints table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS fingerprints (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -20,7 +19,6 @@ def init_db():
         )
     """)
 
-    # Scan history table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS scan_history (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -109,6 +107,7 @@ def get_scan_history():
     conn.close()
 
     history = []
+
     for row in rows:
         history.append({
             "id": row[0],
@@ -119,7 +118,9 @@ def get_scan_history():
         })
 
     return history
-    def get_trend_data():
+
+
+def get_trend_data():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -133,6 +134,7 @@ def get_scan_history():
     conn.close()
 
     trend = []
+
     for row in rows:
         trend.append({
             "timestamp": row[0],
