@@ -5,18 +5,29 @@ DB_PATH = "database/fingerprints.db"
 
 
 def init_db():
-    folder = os.path.dirname(DB_PATH)
-    if folder and not os.path.exists(folder):
-        os.makedirs(folder)
+    if not os.path.exists("database"):
+        os.makedirs("database")
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
+    # Fingerprints table
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS fingerprints (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             video_path TEXT UNIQUE,
             fingerprint TEXT
+        )
+    """)
+
+    # Scan history table
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS scan_history (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            total_videos INTEGER,
+            piracy_matches INTEGER,
+            safe_videos INTEGER,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
     """)
 
@@ -36,10 +47,8 @@ def save_fingerprint(video_path, fingerprint_list):
             (video_path, fingerprint_str)
         )
         conn.commit()
-        print("Fingerprint saved.")
-
     except sqlite3.IntegrityError:
-        print("Fingerprint already exists for this video.")
+        pass
 
     conn.close()
 
@@ -50,17 +59,16 @@ def get_all_fingerprints():
 
     cursor.execute("SELECT video_path, fingerprint FROM fingerprints")
     rows = cursor.fetchall()
-
     conn.close()
 
     result = {}
-
     for video_path, fingerprint_str in rows:
-        fingerprint_list = fingerprint_str.split("|")
-        result[video_path] = fingerprint_list
+        result[video_path] = fingerprint_str.split("|")
 
     return result
-    def get_db_stats():
+
+
+def get_db_stats():
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
@@ -72,3 +80,42 @@ def get_all_fingerprints():
     return {
         "total_registered_videos": count
     }
+
+
+def save_scan_history(total, piracy, safe):
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        INSERT INTO scan_history (total_videos, piracy_matches, safe_videos)
+        VALUES (?, ?, ?)
+    """, (total, piracy, safe))
+
+    conn.commit()
+    conn.close()
+
+
+def get_scan_history():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT id, total_videos, piracy_matches, safe_videos, timestamp
+        FROM scan_history
+        ORDER BY id DESC
+    """)
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    history = []
+    for row in rows:
+        history.append({
+            "id": row[0],
+            "total_videos": row[1],
+            "piracy_matches": row[2],
+            "safe_videos": row[3],
+            "timestamp": row[4]
+        })
+
+    return history
