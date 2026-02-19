@@ -1,18 +1,26 @@
+from core.detection_engine import DETECTION_RESULTS
+
+
 def show_visual_summary():
     print("\n========== AI PIRACY GUARD SUMMARY ==========\n")
 
-    print("Total Videos Scanned : 24")
-    print("Piracy Matches       : 4")
-    print("Deepfake Alerts      : 2")
-    print("Watermark Traced     : 2")
+    if not DETECTION_RESULTS:
+        print("No scan data available.\n")
+        return
 
-    print("\nRisk Overview:")
-    print("HIGH   : 1 video")
-    print("MEDIUM : 1 video")
-    print("LOW    : 22 videos")
+    total = len(DETECTION_RESULTS)
+    piracy_count = 0
+    safe_count = 0
+
+    for result in DETECTION_RESULTS:
+        if result["status"] == "Pirated":
+            piracy_count += 1
+        else:
+            safe_count += 1
+
+    print(f"Total Videos Scanned : {total}")
+    print(f"Piracy Matches       : {piracy_count}")
+    print(f"Safe Videos          : {safe_count}")
 
     print("\nSystem Status: ACTIVE AND MONITORING")
     print("============================================\n")
-
-if __name__ == "__main__":
-    show_visual_summary()
