@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 from src.pipeline import run_pipeline
 from core.detection_engine import register_known_video
@@ -6,8 +7,8 @@ from visualizer import generate_summary
 
 app = Flask(__name__)
 
-# Simple API key (change later in production)
-API_KEY = "secure123"
+# API key from environment variable
+API_KEY = os.environ.get("API_KEY", "default_key")
 
 
 def authorize(req):
@@ -58,14 +59,12 @@ def register():
 
 @app.route("/stats", methods=["GET"])
 def stats():
-    summary = generate_summary()
-    return jsonify(summary)
+    return jsonify(generate_summary())
 
 
 @app.route("/db-info", methods=["GET"])
 def db_info():
-    stats = get_db_stats()
-    return jsonify(stats)
+    return jsonify(get_db_stats())
 
 
 if __name__ == "__main__":
