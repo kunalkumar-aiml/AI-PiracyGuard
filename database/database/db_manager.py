@@ -119,3 +119,24 @@ def get_scan_history():
         })
 
     return history
+    def get_trend_data():
+    conn = sqlite3.connect(DB_PATH)
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT timestamp, piracy_matches
+        FROM scan_history
+        ORDER BY timestamp ASC
+    """)
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    trend = []
+    for row in rows:
+        trend.append({
+            "timestamp": row[0],
+            "piracy_matches": row[1]
+        })
+
+    return trend
