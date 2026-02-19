@@ -6,6 +6,14 @@ from visualizer import generate_summary
 
 app = Flask(__name__)
 
+# Simple API key (change later in production)
+API_KEY = "secure123"
+
+
+def authorize(req):
+    key = req.headers.get("x-api-key")
+    return key == API_KEY
+
 
 @app.route("/")
 def home():
@@ -17,6 +25,9 @@ def home():
 
 @app.route("/run", methods=["POST"])
 def run_scan():
+    if not authorize(request):
+        return jsonify({"error": "Unauthorized"}), 401
+
     run_pipeline()
     summary = generate_summary()
 
@@ -28,6 +39,9 @@ def run_scan():
 
 @app.route("/register", methods=["POST"])
 def register():
+    if not authorize(request):
+        return jsonify({"error": "Unauthorized"}), 401
+
     data = request.get_json()
 
     if not data or "video_path" not in data:
