@@ -2,7 +2,11 @@ import os
 from flask import Flask, request, jsonify
 from src.pipeline import run_pipeline
 from core.detection_engine import register_known_video
-from database.db_manager import get_db_stats
+from database.db_manager import (
+    get_db_stats,
+    save_scan_history,
+    get_scan_history
+)
 from visualizer import generate_summary
 
 app = Flask(__name__)
@@ -31,6 +35,13 @@ def run_scan():
 
     run_pipeline()
     summary = generate_summary()
+
+    # Save scan history
+    save_scan_history(
+        summary["total_videos"],
+        summary["piracy_matches"],
+        summary["safe_videos"]
+    )
 
     return jsonify({
         "status": "Scan completed",
@@ -65,6 +76,13 @@ def stats():
 @app.route("/db-info", methods=["GET"])
 def db_info():
     return jsonify(get_db_stats())
+
+
+@app.route("/history", methods=["GET"])
+def history():
+    return jsonify({
+        "scan_history": get_scan_history()
+    })
 
 
 if __name__ == "__main__":
