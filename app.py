@@ -2,31 +2,50 @@ from flask import Flask, request, jsonify
 from src.pipeline import run_pipeline
 from core.detection_engine import register_known_video
 from database.db_manager import get_db_stats
+from visualizer import generate_summary
 
 app = Flask(__name__)
 
 
 @app.route("/")
 def home():
-    return jsonify({"message": "AI Piracy Guard API Running"})
+    return jsonify({
+        "service": "AI Piracy Guard",
+        "status": "API Running"
+    })
 
 
 @app.route("/run", methods=["POST"])
 def run_scan():
     run_pipeline()
-    return jsonify({"status": "Scan completed"})
+    summary = generate_summary()
+
+    return jsonify({
+        "status": "Scan completed",
+        "summary": summary
+    })
 
 
 @app.route("/register", methods=["POST"])
 def register():
-    data = request.json
-    video_path = data.get("video_path")
+    data = request.get_json()
 
-    if not video_path:
+    if not data or "video_path" not in data:
         return jsonify({"error": "video_path required"}), 400
 
+    video_path = data["video_path"]
     register_known_video(video_path)
-    return jsonify({"status": "Video registered"})
+
+    return jsonify({
+        "status": "Video registered",
+        "video_path": video_path
+    })
+
+
+@app.route("/stats", methods=["GET"])
+def stats():
+    summary = generate_summary()
+    return jsonify(summary)
 
 
 @app.route("/db-info", methods=["GET"])
