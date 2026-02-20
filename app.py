@@ -4,7 +4,7 @@ import datetime
 from flask import Flask, request, jsonify
 from functools import wraps
 
-from src.pipeline import run_pipeline
+from job_queue import start_background_scan, get_job_status
 from core.detection_engine import register_known_video
 from database.db_manager import (
     get_db_stats,
@@ -18,6 +18,8 @@ app = Flask(__name__)
 
 SECRET_KEY = os.environ.get("SECRET_KEY", "supersecretkey")
 
+
+# ---------------- JWT Middleware ---------------- #
 
 def token_required(f):
     @wraps(f)
@@ -36,6 +38,8 @@ def token_required(f):
 
     return decorated
 
+
+# ---------------- Login ---------------- #
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -59,31 +63,38 @@ def login():
     return jsonify({"token": token})
 
 
+# ---------------- Home ---------------- #
+
 @app.route("/")
 def home():
     return jsonify({
         "service": "AI Piracy Guard",
-        "status": "API Running"
+        "status": "API Running (Async Mode)"
     })
 
+
+# ---------------- Async Scan Start ---------------- #
 
 @app.route("/run", methods=["POST"])
 @token_required
 def run_scan():
-    run_pipeline()
-    summary = generate_summary()
-
-    save_scan_history(
-        summary["total_videos"],
-        summary["piracy_matches"],
-        summary["safe_videos"]
-    )
+    job_id = start_background_scan()
 
     return jsonify({
-        "status": "Scan completed",
-        "summary": summary
+        "message": "Scan started",
+        "job_id": job_id
     })
 
+
+# ---------------- Job Status ---------------- #
+
+@app.route("/job/<job_id>", methods=["GET"])
+@token_required
+def job_status(job_id):
+    return jsonify(get_job_status(job_id))
+
+
+# ---------------- Register Video ---------------- #
 
 @app.route("/register", methods=["POST"])
 @token_required
@@ -100,17 +111,23 @@ def register():
     })
 
 
+# ---------------- Stats ---------------- #
+
 @app.route("/stats", methods=["GET"])
 @token_required
 def stats():
     return jsonify(generate_summary())
 
 
+# ---------------- DB Info ---------------- #
+
 @app.route("/db-info", methods=["GET"])
 @token_required
 def db_info():
     return jsonify(get_db_stats())
 
+
+# ---------------- Scan History ---------------- #
 
 @app.route("/history", methods=["GET"])
 @token_required
@@ -119,6 +136,8 @@ def history():
         "scan_history": get_scan_history()
     })
 
+
+# ---------------- Trend Analytics ---------------- #
 
 @app.route("/analytics/trend", methods=["GET"])
 @token_required
