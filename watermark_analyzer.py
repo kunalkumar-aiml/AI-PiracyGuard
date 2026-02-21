@@ -1,13 +1,14 @@
-def check_watermark(video_path):
-    print(f"Analyzing watermark in: {video_path}")
+import random
 
-    # In future this will detect invisible watermark patterns
-    print("Scanning frames...")
-    print("Looking for hidden watermark...")
+def analyze_watermark(video_path):
+    """
+    Simulated watermark tampering detection
+    Returns True if suspicious watermark activity found
+    """
 
-    # Temporary result for now
-    print("Watermark detected: YES")
-    print("Possible source: Studio server A")
+    # Later: real watermark extraction logic
+    suspicious = random.choice([True, False, False])
 
-if __name__ == "__main__":
-    check_watermark("sample_video.mp4")
+    return {
+        "watermark_suspected": suspicious
+    }
