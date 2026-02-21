@@ -1,17 +1,15 @@
 import random
 
-def simple_deepfake_check(video_name):
-    print(f"Checking video: {video_name}")
+def analyze_video(video_path):
+    """
+    Simulated deepfake analysis.
+    Returns score between 0 and 100
+    """
 
-    # This is a simple prototype, not a full model yet
-    score = random.uniform(0, 1)
+    # Later: replace with real ML model
+    score = random.randint(0, 100)
 
-    print(f"Deepfake risk score: {round(score, 2)}")
-
-    if score > 0.6:
-        print("Warning: This video might be manipulated.")
-    else:
-        print("Video looks normal.")
-
-if __name__ == "__main__":
-    simple_deepfake_check("sample_video.mp4")
+    return {
+        "deepfake_score": score,
+        "is_suspected": score > 60
+    }
