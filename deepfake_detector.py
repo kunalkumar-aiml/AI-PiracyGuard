@@ -1,13 +1,16 @@
-import random
+from models.deepfake_model import DeepfakeModel
+
+model = DeepfakeModel()
+model.load()
+
 
 def analyze_video(video_path):
     """
-    Simulated deepfake analysis.
-    Returns score between 0 and 100
+    Returns structured deepfake analysis
     """
 
-    # Later: replace with real ML model
-    score = random.randint(0, 100)
+    probability = model.predict(video_path)
+    score = round(probability * 100, 2)
 
     return {
         "deepfake_score": score,
