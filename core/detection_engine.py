@@ -9,20 +9,21 @@ from database.db_manager import (
     get_all_fingerprints,
     save_scan_history
 )
+from metrics_engine import MetricsEngine
 
 init_db()
 
 DETECTION_RESULTS = []
+metrics = MetricsEngine()
 
 
 def register_known_video(video_path):
     fingerprint = generate_video_fingerprint(video_path)
-
     if fingerprint:
         save_fingerprint(video_path, fingerprint)
 
 
-def check_video(video_path):
+def check_video(video_path, actual_label=False):
     known_videos = get_all_fingerprints()
     new_fp = generate_video_fingerprint(video_path)
 
@@ -48,6 +49,11 @@ def check_video(video_path):
         watermark_flag=watermark_flag
     )
 
+    predicted_positive = risk_analysis["risk_level"] == "HIGH"
+
+    # 🔥 Metrics update
+    metrics.update(predicted_positive, actual_label)
+
     result = {
         "video_path": video_path,
         "similarity": highest_similarity,
@@ -57,6 +63,8 @@ def check_video(video_path):
     }
 
     DETECTION_RESULTS.append(result)
-
-    # 🔥 Save to database history
     save_scan_history(result)
+
+
+def get_model_metrics():
+    return metrics.calculate()
