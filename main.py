@@ -3,7 +3,7 @@ import sys
 from src.pipeline import run_pipeline
 from core.detection_engine import register_known_video
 from visualizer import show_visual_summary
-from db.db_manager import get_db_stats
+from database.db_manager import get_db_stats
 
 
 def main():
