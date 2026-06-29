@@ -3,7 +3,7 @@ import tempfile
 import cv2
 import numpy as np
 
-from deepfake_detector import analyze_video
+from piracyguard.core.deepfake.detector import DeepfakeDetector
 
 
 def test_analyze_synthetic_video():
@@ -19,8 +19,8 @@ def test_analyze_synthetic_video():
         out.write(img)
     out.release()
 
-    res = analyze_video(vid)
-    assert isinstance(res, dict)
-    assert "deepfake_score" in res
-    assert "is_suspected" in res
-    assert "confidence" in res
+    detector = DeepfakeDetector()
+    res = detector.analyze(vid)
+    assert res.deepfake_score >= 0.0
+    assert hasattr(res, "is_suspected")
+    assert res.confidence >= 0.0

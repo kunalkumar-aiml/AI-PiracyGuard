@@ -6,6 +6,7 @@ from .db_manager import (
     save_scan_history,
     get_scan_history,
     get_db_stats,
+    get_trend_data,
 )
 
 __all__ = [
@@ -15,4 +16,5 @@ __all__ = [
     "save_scan_history",
     "get_scan_history",
     "get_db_stats",
+    "get_trend_data",
 ]
